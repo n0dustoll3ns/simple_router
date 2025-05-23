@@ -1,7 +1,9 @@
 part of 'simple_router.dart';
 
 /// Base class for all routes
-abstract class AppRoute<W extends Widget> extends Page<W> {
+abstract class AppRoute<W extends Widget> {
   String get path;
-  W buildPage();
+  W buildPage(BuildContext context);
+
+  Route createRoute(BuildContext context) => MaterialPageRoute(builder: buildPage);
 }

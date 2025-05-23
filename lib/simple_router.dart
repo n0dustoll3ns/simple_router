@@ -36,7 +36,7 @@ class SimpleRouter extends RouterDelegate<AppRoute> with ChangeNotifier, PopNavi
       pages: _routes
           .map((route) => MaterialPage(
                 key: ValueKey(route.path),
-                child: route.buildPage(),
+                child: route.buildPage(context),
               ))
           .toList(),
       onDidRemovePage: (page) {
@@ -52,4 +52,3 @@ class SimpleRouter extends RouterDelegate<AppRoute> with ChangeNotifier, PopNavi
     push(route);
   }
 }
-
