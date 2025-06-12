@@ -85,13 +85,13 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
       await popRoute();
     } else {
       // Если это последняя страница, показываем диалог выхода или выходим
-      await handleAppExit();
+      await handleAppExit(navigatorKey.currentContext!);
     }
   }
 
   /// Обработка выхода из приложения
   /// Вызывается когда пользователь нажимает системную кнопку "Назад", если в стеке роутера нет других страниц
-  Future<void> Function() handleAppExit;
+  Future<void> Function(BuildContext context) handleAppExit;
   // async {
   //   final context = navigatorKey.currentContext;
   //   if (context == null) {
