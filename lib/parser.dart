@@ -1,11 +1,11 @@
 part of 'simple_router.dart';
 
-class SimpleRouteInformationParser extends RouteInformationParser<AppRoutePage> {
+class SimpleRouteInformationParser extends RouteInformationParser<SimpleRoutePage> {
   const SimpleRouteInformationParser(this.unknownRouteBuilder);
-  final AppRoutePage Function() unknownRouteBuilder;
+  final SimpleRoutePage Function() unknownRouteBuilder;
 
   @override
-  Future<AppRoutePage> parseRouteInformation(
+  Future<SimpleRoutePage> parseRouteInformation(
     RouteInformation routeInformation,
   ) async {
     /// TODO: подумать как сделать это красиво
@@ -13,7 +13,7 @@ class SimpleRouteInformationParser extends RouteInformationParser<AppRoutePage> 
   }
 
   @override
-  RouteInformation restoreRouteInformation(AppRoutePage configuration) {
+  RouteInformation restoreRouteInformation(SimpleRoutePage configuration) {
     final routeName = configuration.name.toLowerCase();
     // Убираем "route" из конца, если есть
     String path = routeName.endsWith('route') ? routeName.substring(0, routeName.length - 5) : routeName;

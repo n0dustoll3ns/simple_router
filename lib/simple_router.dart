@@ -7,29 +7,29 @@ part 'parser.dart';
 part 'fade_page_route.dart';
 
 /// Router delegate
-class SimpleRouter extends RouterDelegate<AppRoutePage> with ChangeNotifier, PopNavigatorRouterDelegateMixin<AppRoutePage> {
-  SimpleRouter({required AppRoutePage defaultRoute, required this.handleAppExit})
+class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, PopNavigatorRouterDelegateMixin<SimpleRoutePage> {
+  SimpleRouter({required SimpleRoutePage defaultRoute, required this.handleAppExit})
       : _defaultRoute = defaultRoute,
         navigatorKey = GlobalKey<NavigatorState>();
 
   @override
-  AppRoutePage get currentConfiguration {
+  SimpleRoutePage get currentConfiguration {
     final pagesInStack = [defaultRoute, ..._pages];
     final route = pagesInStack.last;
     return route;
   }
 
-  final List<AppRoutePage> _pages = [];
-  List<AppRoutePage> get pages => _pages;
+  final List<SimpleRoutePage> _pages = [];
+  List<SimpleRoutePage> get pages => _pages;
 
   @override
   final GlobalKey<NavigatorState> navigatorKey;
 
-  AppRoutePage _defaultRoute;
-  AppRoutePage get defaultRoute => _defaultRoute;
+  SimpleRoutePage _defaultRoute;
+  SimpleRoutePage get defaultRoute => _defaultRoute;
 
   /// Transition to a new route
-  void _push(AppRoutePage route, {bool replace = false}) async {
+  void _push(SimpleRoutePage route, {bool replace = false}) async {
     if (replace) {
       _pages.removeLast();
     }
@@ -38,12 +38,12 @@ class SimpleRouter extends RouterDelegate<AppRoutePage> with ChangeNotifier, Pop
   }
 
   /// Navigate to a new route
-  void push(AppRoutePage route, {bool replace = false}) {
+  void push(SimpleRoutePage route, {bool replace = false}) {
     _push(route, replace: replace);
   }
 
   /// Replace current route stack with a new route
-  void replaceAll(AppRoutePage route) {
+  void replaceAll(SimpleRoutePage route) {
     _pages.clear();
     _defaultRoute = route;
     notifyListeners();
@@ -64,7 +64,7 @@ class SimpleRouter extends RouterDelegate<AppRoutePage> with ChangeNotifier, Pop
         key: navigatorKey,
         pages: pages,
         onDidRemovePage: (page) {
-          if (page is! AppRoutePage) return;
+          if (page is! SimpleRoutePage) return;
           if (!pages.contains(page)) return;
           if (page != pages.last) return;
 
@@ -128,7 +128,7 @@ class SimpleRouter extends RouterDelegate<AppRoutePage> with ChangeNotifier, Pop
   }
 
   @override
-  Future<void> setNewRoutePath(AppRoutePage configuration) async {
+  Future<void> setNewRoutePath(SimpleRoutePage configuration) async {
     _push(configuration);
   }
 
@@ -144,14 +144,14 @@ class SimpleRouter extends RouterDelegate<AppRoutePage> with ChangeNotifier, Pop
   }
 
   @override
-  Future<void> setInitialRoutePath(AppRoutePage<Widget> configuration) async {
+  Future<void> setInitialRoutePath(SimpleRoutePage<Widget> configuration) async {
     _defaultRoute = configuration;
     _pages.clear();
     notifyListeners();
   }
 
   @override
-  Future<void> setRestoredRoutePath(AppRoutePage<Widget> configuration) async {
+  Future<void> setRestoredRoutePath(SimpleRoutePage<Widget> configuration) async {
     setNewRoutePath(configuration);
   }
 }

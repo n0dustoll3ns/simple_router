@@ -1,8 +1,8 @@
 part of 'simple_router.dart';
 
 /// Base class for all routes
-abstract class AppRoutePage<T extends Widget> extends Page<T> {
-  const AppRoutePage();
+abstract class SimpleRoutePage<T extends Widget> extends Page<T> {
+  const SimpleRoutePage();
 
   T get view;
 
@@ -22,7 +22,7 @@ abstract class AppRoutePage<T extends Widget> extends Page<T> {
 
   @override
   bool canUpdate(Page other) {
-    if (other is! AppRoutePage) return false;
+    if (other is! SimpleRoutePage) return false;
     return runtimeType == other.runtimeType && key == other.key;
   }
 
