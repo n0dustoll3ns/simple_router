@@ -9,7 +9,7 @@ part 'simple_back_dispatcher.dart';
 
 /// Router delegate
 class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, PopNavigatorRouterDelegateMixin<SimpleRoutePage> {
-  SimpleRouter({required DefaultSimpleRoutePage defaultRoute, required this.handleAppExit})
+  SimpleRouter({required DefaultSimpleRoutePage defaultRoute})
       : _defaultRoute = defaultRoute,
         navigatorKey = GlobalKey<NavigatorState>();
 
@@ -53,46 +53,22 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
   @override
   Widget build(BuildContext context) {
     final pages = List.of([_defaultRoute, ..._pages]);
-    return PopScope(
-      canPop: false, // Перехватываем все попытки закрытия
-      onPopInvokedWithResult: (didPop, result) async {
-        if (didPop) return;
+    return Navigator(
+      key: navigatorKey,
+      pages: pages,
+      onDidRemovePage: (page) {
+        if (page is! SimpleRoutePage) return;
+        if (!pages.contains(page)) return;
+        if (page != pages.last) return;
 
-        // Обрабатываем системную кнопку "Назад"
-        await _handleSystemBack();
+        if (canBack()) {
+          _pages.remove(page);
+          // Уведомляем об изменении конфигурации для обновления URL
+          notifyListeners();
+        }
       },
-      child: Navigator(
-        key: navigatorKey,
-        pages: pages,
-        onDidRemovePage: (page) {
-          if (page is! SimpleRoutePage) return;
-          if (!pages.contains(page)) return;
-          if (page != pages.last) return;
-
-          if (canBack()) {
-            _pages.remove(page);
-            // Уведомляем об изменении конфигурации для обновления URL
-            notifyListeners();
-          }
-        },
-      ),
     );
   }
-
-  /// Обработка системной кнопки "Назад"
-  Future<void> _handleSystemBack() async {
-    if (canBack()) {
-      // Если можем вернуться назад в стеке
-      await popRoute();
-    } else {
-      // Если это последняя страница, показываем диалог выхода или выходим
-      await handleAppExit(navigatorKey.currentContext!);
-    }
-  }
-
-  /// Обработка выхода из приложения
-  /// Вызывается когда пользователь нажимает системную кнопку "Назад", если в стеке роутера нет других страниц
-  Future<void> Function(BuildContext context) handleAppExit;
 
   bool canBack() {
     return [defaultRoute, ..._pages].length > 1;
