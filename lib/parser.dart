@@ -2,14 +2,14 @@ part of 'simple_router.dart';
 
 class SimpleRouteInformationParser extends RouteInformationParser<SimpleRoutePage> {
   const SimpleRouteInformationParser(this.unknownRouteBuilder);
-  final SimpleRoutePage Function() unknownRouteBuilder;
+  final SimpleRoutePage Function(RouteInformation) unknownRouteBuilder;
 
   @override
   Future<SimpleRoutePage> parseRouteInformation(
     RouteInformation routeInformation,
   ) async {
     /// TODO: подумать как сделать это красиво
-    return unknownRouteBuilder();
+    return unknownRouteBuilder(routeInformation);
   }
 
   @override

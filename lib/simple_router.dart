@@ -5,10 +5,11 @@ import 'package:flutter/material.dart';
 part 'route.dart';
 part 'parser.dart';
 part 'fade_page_route.dart';
+part 'simple_back_dispatcher.dart';
 
 /// Router delegate
 class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, PopNavigatorRouterDelegateMixin<SimpleRoutePage> {
-  SimpleRouter({required SimpleRoutePage defaultRoute, required this.handleAppExit})
+  SimpleRouter({required DefaultSimpleRoutePage defaultRoute, required this.handleAppExit})
       : _defaultRoute = defaultRoute,
         navigatorKey = GlobalKey<NavigatorState>();
 
@@ -25,8 +26,8 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
   @override
   final GlobalKey<NavigatorState> navigatorKey;
 
-  SimpleRoutePage _defaultRoute;
-  SimpleRoutePage get defaultRoute => _defaultRoute;
+  DefaultSimpleRoutePage _defaultRoute;
+  DefaultSimpleRoutePage get defaultRoute => _defaultRoute;
 
   /// Transition to a new route
   void _push(SimpleRoutePage route, {bool replace = false}) async {
@@ -43,7 +44,7 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
   }
 
   /// Replace current route stack with a new route
-  void replaceAll(SimpleRoutePage route) {
+  void replaceAll(DefaultSimpleRoutePage route) {
     _pages.clear();
     _defaultRoute = route;
     notifyListeners();
@@ -92,49 +93,28 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
   /// Обработка выхода из приложения
   /// Вызывается когда пользователь нажимает системную кнопку "Назад", если в стеке роутера нет других страниц
   Future<void> Function(BuildContext context) handleAppExit;
-  // async {
-  //   final context = navigatorKey.currentContext;
-  //   if (context == null) {
-  //     SystemNavigator.pop();
-  //     return;
-  //   }
-
-  //   // Показываем диалог подтверждения выхода
-  //   final shouldExit = await showDialog<bool>(
-  //     context: context,
-  //     builder: (context) => AlertDialog(
-  //       title: const Text('Выход из приложения'),
-  //       content: const Text('Вы действительно хотите выйти?'),
-  //       actions: [
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(false),
-  //           child: const Text('Отмена'),
-  //         ),
-  //         TextButton(
-  //           onPressed: () => Navigator.of(context).pop(true),
-  //           child: const Text('Выйти'),
-  //         ),
-  //       ],
-  //     ),
-  //   );
-
-  //   if (shouldExit == true) {
-  //     SystemNavigator.pop();
-  //   }
-  // }
 
   bool canBack() {
-    return _pages.isNotEmpty;
+    return [defaultRoute, ..._pages].length > 1;
   }
 
   @override
   Future<void> setNewRoutePath(SimpleRoutePage configuration) async {
-    _push(configuration);
+    if (configuration is DefaultSimpleRoutePage && configuration.name != defaultRoute.name) {
+      return;
+      // установка дефолтного роута выполняется в setInitialRoutePath
+    }
+    final pagesList = [defaultRoute, ..._pages];
+    if (pagesList.map((e) => e.name).toSet().contains(configuration.name)) {
+      popRoute();
+    } else {
+      _push(configuration);
+    }
   }
 
   @override
   Future<bool> popRoute() async {
-    if (_pages.isNotEmpty) {
+    if (canBack()) {
       _pages.removeLast();
       notifyListeners(); // Это важно для обновления URL
       return true;
@@ -145,7 +125,8 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
 
   @override
   Future<void> setInitialRoutePath(SimpleRoutePage<Widget> configuration) async {
-    _defaultRoute = configuration;
+    assert(configuration is DefaultSimpleRoutePage);
+    _defaultRoute = configuration as DefaultSimpleRoutePage;
     _pages.clear();
     notifyListeners();
   }

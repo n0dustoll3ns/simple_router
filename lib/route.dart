@@ -40,3 +40,5 @@ abstract class SimpleRoutePage<T extends Widget> extends Page<T> {
   @override
   String? get restorationId => name;
 }
+
+abstract class DefaultSimpleRoutePage<T extends Widget> extends SimpleRoutePage<T> {}

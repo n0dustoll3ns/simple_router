@@ -1,5 +1,4 @@
-import 'package:flutter/material.dart';
-import 'package:simple_router/simple_router.dart';
+part of 'simple_router.dart';
 
 class SimpleBackButtonDispatcher extends RootBackButtonDispatcher {
   final SimpleRouter _router;
