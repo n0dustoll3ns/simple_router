@@ -70,6 +70,7 @@ class SimpleRouter extends RouterDelegate<SimpleRoutePage> with ChangeNotifier, 
     );
   }
 
+
   bool canBack() {
     return [defaultRoute, ..._pages].length > 1;
   }
